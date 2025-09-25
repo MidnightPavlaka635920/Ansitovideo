@@ -10,5 +10,10 @@ This is project that transfers output of initframis to video, but in ASCII form.
 - C++ compiler, I am using g++
 ## Usage
 - This program should be ran in any bash terminal, I think.
+- How to run it:
+  ```
+  ./ansitovideo input.full out.mp4
+  ```
 ### Arguments
--
+- Input file, output of initframis and
+- Output file, mp4
