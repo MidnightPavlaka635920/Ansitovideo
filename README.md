@@ -15,7 +15,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
 - This program should be ran in any bash terminal, I think.
 - How to run it:
   ```
-  ./ansitovideo input.full out.mp4
+  ./ansitovideo output_of_initframis.full output.mp4
   ```
 ### Arguments
 - Input file, output of initframis and
