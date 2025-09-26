@@ -1,4 +1,5 @@
 # Ansitovideo
+<img height="503" alt="image" src="https://github.com/user-attachments/assets/6a6e0f2e-2d1b-4e08-96da-aa88df41edb1" />
 This is project that transfers output of initframis to video, but in ASCII form.
 ## About 
 - I created initframis, it works, but .full file is not supported as a video format and I had to do something.
