@@ -16,4 +16,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
   ```
 ### Arguments
 - Input file, output of initframis and
-- Output file, mp4
+- Output file, mp4.
+## Compiling
+- You can use release .deb file, or
+- build it yourself with the script. Note that you might need to do `chmod +x compileatv.sh` to run the script.
