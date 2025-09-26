@@ -1,5 +1,6 @@
 # Ansitovideo
 <img height="503" alt="image" src="https://github.com/user-attachments/assets/6a6e0f2e-2d1b-4e08-96da-aa88df41edb1" />
+**DON'T ASK ABOUT VIDEO AND FILENAME...**
 
 This is project that transfers output of initframis to video, but in ASCII form.
 ## About 
