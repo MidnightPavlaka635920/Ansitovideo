@@ -20,3 +20,12 @@ This is project that transfers output of initframis to video, but in ASCII form.
 ## Compiling
 - You can use release .deb file, or
 - build it yourself with the script. Note that you might need to do `chmod +x compileatv.sh` to run the script.
+## After converting
+This is what I like to do, and so do you maybe:
+1. Add audio:
+    ```
+    ffmpeg -i out_of_ansitovideo.mp4 -i original_video_or_audio.mp4 -c:v copy -map 0:v:0 -map 1:a:0 -shortest output_with_audio.mp4
+    ```
+2. Add subtitle if they exis. How? Let me explain.
+   1. Get subtitles from youtube with an extension
+   2. Run this, don't worry: `ffmpeg -i output_with_audio.mp4 -i subtitles.srt -c copy -c:s mov_text output_with_subs.mp4`
