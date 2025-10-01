@@ -32,3 +32,5 @@ This is what I like to do, and so do you maybe:
 2. Add subtitle if they exis. How? Let me explain.
    1. Get subtitles from youtube with an extension
    2. Run this, don't worry: `ffmpeg -i output_with_audio.mp4 -i subtitles.srt -c copy -c:s mov_text output_with_subs.mp4`
+## Notes:
+- You saw the image, didn't you? And, it looks familiar? Well, that image is reason why I did this in the first place.
