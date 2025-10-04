@@ -128,7 +128,8 @@ int main(int argc, char* argv[]){
     if(!fin){ std::cerr<<"Cannot open input\n"; return 1; }
 
     // Read header
-    int FPS=25, W=80, H=50;
+    int W=80, H=50;
+    float FPS=25;
     std::string line;
     while(std::getline(fin,line)){
         if(line.rfind("FPS:",0)==0) FPS = std::stoi(line.substr(4));
@@ -147,11 +148,25 @@ RGB fg={255,255,255}, bg={0,0,0};
 
 // FFmpeg pipeline
 char cmd[1024];
-snprintf(cmd,sizeof(cmd),
-    "ffmpeg -y -f rawvideo -pixel_format rgb24 "
-    "-video_size %dx%d -framerate %d -i - "
-    "-c:v libx264 -pix_fmt yuv420p \"%s\"",
-    width,height,FPS,argv[2]);
+// If FPS is 29.97, use 30000/1001; for 23.976, use 24000/1001, etc.
+const char* fps_str = (labs(FPS - 29.97) < 0.01) ? "30000/1001" :
+                      (labs(FPS - 23.976) < 0.01) ? "24000/1001" :
+                      (labs(FPS - 59.94) < 0.01) ? "60000/1001" :
+                      nullptr;
+
+if (fps_str) {
+    snprintf(cmd,sizeof(cmd),
+        "ffmpeg -y -f rawvideo -pixel_format rgb24 "
+        "-video_size %dx%d -framerate %s -i - -r %s "
+        "-c:v libx264 -pix_fmt yuv420p \"%s\"",
+        width, height, fps_str, fps_str, argv[2]);
+} else {
+    snprintf(cmd,sizeof(cmd),
+        "ffmpeg -y -f rawvideo -pixel_format rgb24 "
+        "-video_size %dx%d -framerate %.5f -i - -r %.5f "
+        "-c:v libx264 -pix_fmt yuv420p \"%s\"",
+        width, height, FPS, FPS, argv[2]);
+}
 
 FILE* pipe = popen(cmd,"w");
 if(!pipe){ std::cerr<<"Cannot start ffmpeg\n"; return 1; }
