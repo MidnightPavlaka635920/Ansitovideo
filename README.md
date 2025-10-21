@@ -24,6 +24,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
 ## Compiling
 - You can use release .deb file, or
 - build it yourself with the script. Note that you might need to do `chmod +x compileatv.sh` to run the script.
+- For Windows, use a compiler.
 ## After converting
 This is what I like to do, and so do you maybe:
 1. Add audio:
