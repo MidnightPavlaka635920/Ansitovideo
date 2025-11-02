@@ -6,7 +6,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
 ## About 
 - I created initframis, it works, but .full file is not supported as a video format and I had to do something.
 - This script does transfer Initframis 1.1's output to mp4, webm or any other video format.
-- Again, I don't know how is this supposed to work on Windows, other than a VM or WSL. **(With version 1.3+ Windows is supported via ansitovideo_windows.cpp!)**
+- Again, I don't know how is this supposed to work on Windows, other than a VM or WSL. **(With version 1.3+ Windows is supported!)**
 ## Dependencies
 - C++ libraries
 - Ffmpeg
