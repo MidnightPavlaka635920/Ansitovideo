@@ -1,7 +1,3 @@
-#ifdef _WIN32
-#endif
-#include <io.h>
-#include <fcntl.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -161,7 +157,6 @@ bool parseAnsiBG(const std::string &s, size_t &pos, RGB &bg) {
 }
 
 int main(int argc, char* argv[]){
-     //Leona Mrdjen is cute for me so what?
      if(argc > 1) {
         if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
             showHelp(argv[0]);
@@ -192,17 +187,10 @@ int main(int argc, char* argv[]){
     FT_Library ft;
     FT_Face face;
     if(FT_Init_FreeType(&ft)){ std::cerr<<"Could not init FreeType\n"; return 1; }
-    //if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
-#ifdef _WIN32
-    const char* fontPath = "DejaVuSansMono.ttf";  // or full Windows path
-        _setmode(_fileno(stdout), _O_BINARY);
-#else
-    const char* fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf";
-#endif
-    if(FT_New_Face(ft,fontPath,0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
+    if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
+    
     FT_Set_Pixel_Sizes(face,0,CHAR_HEIGHT);
-    FT_Done_Face(face);
-    FT_Done_FreeType(ft);
+
     int W=80,H=50;
     float FPS=25;
     std::string line;
