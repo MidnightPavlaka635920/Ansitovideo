@@ -16,10 +16,10 @@ This is project that transfers output of initframis to video, but in ASCII form.
 - This program should be ran in any bash terminal, I think.
 - How to run it:
   ```
-  ./ansitovideo output_of_initframis.full output.mp4
+  ansitovideo output_of_initframis.full output.mp4
   ```
 ### Arguments
-- Input file, output of initframis and
+- Input file, output of initframis (**After 1.4, you can do** `initframis input.mp4 80 - h | ansitovideo - output.mp4` **to save disk space as it pipes output directly**) and
 - Output file, mp4.
 ## Compiling
 - You can use release .deb file, or
