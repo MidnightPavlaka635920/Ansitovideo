@@ -201,8 +201,7 @@ int main(int argc, char* argv[]){
 #endif
     if(FT_New_Face(ft,fontPath,0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
     FT_Set_Pixel_Sizes(face,0,CHAR_HEIGHT);
-    FT_Done_Face(face);
-    FT_Done_FreeType(ft);
+    
     int W=80,H=50;
     float FPS=25;
     std::string line;
@@ -274,5 +273,7 @@ int main(int argc, char* argv[]){
 
     pclose(pipe);
     std::cerr<<"Done!\n";
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
     return 0;
 }
