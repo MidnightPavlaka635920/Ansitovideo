@@ -31,7 +31,20 @@ size_t utf8CharLength(const char* s) {
     else if((c & 0xF8)==0xF0) return 4;
     return 1;
 }
-
+void showHelp(const char* progName) {
+    std::cout << "Usage: " << progName << " <input_file filename|-> <output_file>\n\n"
+              << "Options:\n"
+              << "  -h, --help        Show this help message and exit\n"
+              << "  -v, --version     Show program version and exit\n\n"
+              << "Arguments:\n"
+              << "  video_file        Input video file to process. - reades from initframis's piped output\n"
+              << "  output_file       Output file\n\n"
+              << "Example:\n"
+              << "  " << progName << " - output.mp4\n";
+}
+void showVersion() {
+    std::cout << "ansitovideo 1.4\n";
+}
 // Draw a font-rendered character
 void drawFontChar(Frame &frame, int x, int y, const char* c, const RGB &fg, const RGB &bg, int frameW, int frameH, FT_Face face) {
     unsigned int codepoint = 0;
@@ -144,6 +157,16 @@ bool parseAnsiBG(const std::string &s, size_t &pos, RGB &bg) {
 }
 
 int main(int argc, char* argv[]){
+     if(argc > 1) {
+        if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
+            showHelp(argv[0]);
+            return 0;
+        }
+        if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+            showVersion();
+            return 0;
+        }
+    }
     if(argc<3){ std::cerr<<"Usage: "<<argv[0]<<" input.full output.mp4\n"; return 1; }
 
     //std::ifstream fin(argv[1]);
