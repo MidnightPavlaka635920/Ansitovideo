@@ -146,8 +146,20 @@ bool parseAnsiBG(const std::string &s, size_t &pos, RGB &bg) {
 int main(int argc, char* argv[]){
     if(argc<3){ std::cerr<<"Usage: "<<argv[0]<<" input.full output.mp4\n"; return 1; }
 
-    std::ifstream fin(argv[1]);
-    if(!fin){ std::cerr<<"Cannot open input\n"; return 1; }
+    //std::ifstream fin(argv[1]);
+    //if(!fin){ std::cerr<<"Cannot open input\n"; return 1; }
+    std::istream* in;
+    std::ifstream file;
+    if (strcmp(argv[1], "-") == 0){
+        in = &std::cin;
+        std::cin.sync_with_stdio(false);
+    } else {
+        file.open(argv[1]);
+        if (!file){
+            std::cerr<<"Cannot open input\n"; return 1;
+        }
+        in = &file;
+    }
 
     FT_Library ft;
     FT_Face face;
@@ -158,7 +170,7 @@ int main(int argc, char* argv[]){
     int W=80,H=50;
     float FPS=25;
     std::string line;
-    while(std::getline(fin,line)){
+    while(std::getline(*in,line)){
         if(line.rfind("FPS:",0)==0) FPS=std::stof(line.substr(4));
         else if(line.rfind("W:",0)==0) W=std::stoi(line.substr(2));
         else if(line.rfind("H:",0)==0) H=std::stoi(line.substr(2));
@@ -191,7 +203,7 @@ int main(int argc, char* argv[]){
         std::vector<std::string> frameLines;
         frameLines.push_back(line);
         for(int r=1;r<H;++r){
-            if(!std::getline(fin,line)) break;
+            if(!std::getline(*in,line)) break;
             frameLines.push_back(line);
         }
         if((int)frameLines.size()<H) break;
@@ -222,7 +234,7 @@ int main(int argc, char* argv[]){
         }
 
         fwrite(current.pixels.data(),1,current.pixels.size(),pipe);
-    } while(std::getline(fin,line));
+    } while(std::getline(*in,line));
 
     pclose(pipe);
     std::cerr<<"Done!\n";
