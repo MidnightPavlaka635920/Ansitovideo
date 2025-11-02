@@ -187,7 +187,13 @@ int main(int argc, char* argv[]){
     FT_Library ft;
     FT_Face face;
     if(FT_Init_FreeType(&ft)){ std::cerr<<"Could not init FreeType\n"; return 1; }
-    if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
+    //if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
+    #ifdef _WIN32
+        const char* fontPath = "DejaVuSansMono.ttf";  // or full Windows path
+         _setmode(_fileno(stdout), _O_BINARY);
+    #else
+        const char* fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf";
+    #endif
     FT_Set_Pixel_Sizes(face,0,CHAR_HEIGHT);
 
     int W=80,H=50;
