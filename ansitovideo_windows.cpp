@@ -157,6 +157,7 @@ bool parseAnsiBG(const std::string &s, size_t &pos, RGB &bg) {
 }
 
 int main(int argc, char* argv[]){
+    //Leona Mrdjen is cute for me so what?
     if(argc > 1) {
         if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
             showHelp(argv[0]);
