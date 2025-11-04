@@ -2,6 +2,7 @@
 #endif
 #include <io.h>
 #include <fcntl.h>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -10,6 +11,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <windows.h>
+#include <locale>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -79,7 +82,7 @@ void drawFontChar(Frame &frame, int x, int y, const char* c, const RGB &fg, cons
 
 // Draw block/half block characters
 void drawChar(Frame &frame, int x, int y, const char* c, const RGB &fg, const RGB &bg, int frameW, int frameH) {
-    if(strcmp(c,"▀")==0) {
+    if(strcmp(c,u8"▀")==0) {
         for(int j=0;j<CHAR_HEIGHT/2;++j)
             for(int i=0;i<MY_CHAR_WIDTH;++i)
                 if(x+i<frameW && y+j<frameH) {
@@ -92,7 +95,7 @@ void drawChar(Frame &frame, int x, int y, const char* c, const RGB &fg, const RG
                     int idx=3*((y+j)*frameW + (x+i));
                     frame.pixels[idx+0]=bg.r; frame.pixels[idx+1]=bg.g; frame.pixels[idx+2]=bg.b;
                 }
-    } else if(strcmp(c,"▄")==0) {
+    } else if(strcmp(c,u8"▄")==0) {
         for(int j=0;j<CHAR_HEIGHT/2;++j)
             for(int i=0;i<MY_CHAR_WIDTH;++i)
                 if(x+i<frameW && y+j<frameH) {
@@ -105,7 +108,7 @@ void drawChar(Frame &frame, int x, int y, const char* c, const RGB &fg, const RG
                     int idx=3*((y+j)*frameW + (x+i));
                     frame.pixels[idx+0]=fg.r; frame.pixels[idx+1]=fg.g; frame.pixels[idx+2]=fg.b;
                 }
-    } else if(strcmp(c,"█")==0) {
+    } else if(strcmp(c,u8"█")==0) {
         for(int j=0;j<CHAR_HEIGHT;++j)
             for(int i=0;i<MY_CHAR_WIDTH;++i)
                 if(x+i<frameW && y+j<frameH) {
@@ -182,7 +185,7 @@ int main(int argc, char* argv[]){
         in = &std::cin;
         std::cin.sync_with_stdio(false);
     } else {
-        file.open(argv[1]);
+        file.open(argv[1], std::ios::binary);
         if (!file){
             std::cerr<<"Cannot open input\n"; return 1;
         }
@@ -194,7 +197,11 @@ int main(int argc, char* argv[]){
     if(FT_Init_FreeType(&ft)){ std::cerr<<"Could not init FreeType\n"; return 1; }
     //if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
 #ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    std::setlocale(LC_ALL, ".UTF-8");
     const char* fontPath = "DejaVuSansMono.ttf";  // or full Windows path
+        _setmode(_fileno(stdin), _O_BINARY);
         _setmode(_fileno(stdout), _O_BINARY);
 #else
     const char* fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf";
@@ -219,9 +226,9 @@ int main(int argc, char* argv[]){
     current.pixels.resize(width*height*3);
 
     char cmd[1024];
-    const char* fps_str=(labs(FPS-29.97)<0.01)?"30000/1001":
-                        (labs(FPS-23.976)<0.01)?"24000/1001":
-                        (labs(FPS-59.94)<0.01)?"60000/1001":nullptr;
+    const char* fps_str=(fabs(FPS-29.97)<0.01)?"30000/1001":
+                        (fabs(FPS-23.976)<0.01)?"24000/1001":
+                        (fabs(FPS-59.94)<0.01)?"60000/1001":nullptr;
     if(fps_str) snprintf(cmd,sizeof(cmd),
         "ffmpeg -y -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %s -i - -r %s -c:v libx264 -pix_fmt yuv420p \"%s\"",
         width,height,fps_str,fps_str,argv[2]);
@@ -229,7 +236,7 @@ int main(int argc, char* argv[]){
         "ffmpeg -y -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %.5f -i - -r %.5f -c:v libx264 -pix_fmt yuv420p \"%s\"",
         width,height,FPS,FPS,argv[2]);
 
-    FILE* pipe=popen(cmd,"w");
+    FILE* pipe= _popen(cmd,"wb");
     if(!pipe){ std::cerr<<"Cannot start ffmpeg\n"; return 1; }
 
     do {
@@ -271,7 +278,7 @@ int main(int argc, char* argv[]){
         fwrite(current.pixels.data(),1,current.pixels.size(),pipe);
     } while(std::getline(*in,line));
 
-    pclose(pipe);
+    _pclose(pipe);
     std::cerr<<"Done!\n";
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
