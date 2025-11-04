@@ -50,7 +50,7 @@ void showHelp(const char* progName) {
               << "  " << progName << " - output.mp4\n";
 }
 void showVersion() {
-    std::cout << "ansitovideo 1.4\n";
+    std::cout << "ansitovideo 1.5\n";
 }
 // Draw a font-rendered character
 void drawFontChar(Frame &frame, int x, int y, const char* c, const RGB &fg, const RGB &bg, int frameW, int frameH, FT_Face face) {
