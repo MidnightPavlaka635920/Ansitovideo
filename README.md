@@ -11,6 +11,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
 - C++ libraries
 - Ffmpeg
 - C++ compiler, I am using g++
+- For Windows, MinGW
 - FreeType **(For Windows, compile it youself or find online, https://freetype.org/download.html)**
 ## Usage
 - This program should be ran in any bash terminal, I think.
