@@ -19,7 +19,7 @@ This is project that transfers output of initframis to video, but in ASCII form.
   ansitovideo output_of_initframis.full output.mp4
   ```
 ### Arguments
-- Input file, output of initframis (**After 1.4, you can do** `initframis input.mp4 80 - h | ansitovideo - output.mp4` **to save disk space as it pipes output directly**) and
+- Input file, output of initframis (**After Ansitovideo 1.4/Initframis 1.3, you can do** `initframis input.mp4 80 - h | ansitovideo - output.mp4` **to save disk space as it pipes output directly**) and
 - Output file, mp4.
 ## Compiling
 - You can use release .deb file, or
