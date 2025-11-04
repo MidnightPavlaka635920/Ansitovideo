@@ -1,3 +1,10 @@
+#ifdef _WIN32
+#include <io.h>
+#include <fcntl.h>
+#include <cmath>
+#include <windows.h>
+#include <locale>
+#endif
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -157,7 +164,7 @@ bool parseAnsiBG(const std::string &s, size_t &pos, RGB &bg) {
 }
 
 int main(int argc, char* argv[]){
-     //Leona Mrdjen is cute for me so what? - 02/11/2025
+    //Leona Mrdjen is cute for me so what?
      if(argc > 1) {
         if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
             showHelp(argv[0]);
@@ -178,17 +185,32 @@ int main(int argc, char* argv[]){
         in = &std::cin;
         std::cin.sync_with_stdio(false);
     } else {
-        file.open(argv[1]);
+        #ifdef _WIN32
+            file.open(argv[1], std::ios::binary);
+        #else
+            file.open(argv[1]);
+        #endif
         if (!file){
             std::cerr<<"Cannot open input\n"; return 1;
         }
         in = &file;
     }
+    #ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+        std::setlocale(LC_ALL, ".UTF-8");
+        const char* fontPath = "DejaVuSansMono.ttf";  // or full Windows path
+        _setmode(_fileno(stdin), _O_BINARY);
+        _setmode(_fileno(stdout), _O_BINARY);
+    #else
+        std::setlocale(LC_ALL, "en_US.UTF-8");
+        const char* fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf";
+    #endif
 
     FT_Library ft;
     FT_Face face;
     if(FT_Init_FreeType(&ft)){ std::cerr<<"Could not init FreeType\n"; return 1; }
-    if(FT_New_Face(ft,"/usr/bin/share/fonts/DejaVuSansMono.ttf",0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
+    if(FT_New_Face(ft,fontPath,0,&face)){ std::cerr<<"Could not load font\n"; return 1; }
     
     FT_Set_Pixel_Sizes(face,0,CHAR_HEIGHT);
 
@@ -209,17 +231,21 @@ int main(int argc, char* argv[]){
     current.pixels.resize(width*height*3);
 
     char cmd[1024];
-    const char* fps_str=(labs(FPS-29.97)<0.01)?"30000/1001":
-                        (labs(FPS-23.976)<0.01)?"24000/1001":
-                        (labs(FPS-59.94)<0.01)?"60000/1001":nullptr;
+    
+    const char* fps_str=(fabs(FPS-29.97)<0.01)?"30000/1001":
+                        (fabs(FPS-23.976)<0.01)?"24000/1001":
+                        (fabs(FPS-59.94)<0.01)?"60000/1001":nullptr;
     if(fps_str) snprintf(cmd,sizeof(cmd),
         "ffmpeg -y -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %s -i - -r %s -c:v libx264 -pix_fmt yuv420p \"%s\"",
         width,height,fps_str,fps_str,argv[2]);
     else snprintf(cmd,sizeof(cmd),
         "ffmpeg -y -f rawvideo -pixel_format rgb24 -video_size %dx%d -framerate %.5f -i - -r %.5f -c:v libx264 -pix_fmt yuv420p \"%s\"",
         width,height,FPS,FPS,argv[2]);
-
-    FILE* pipe=popen(cmd,"w");
+    #ifdef _WIN32
+        FILE* pipe=_popen(cmd,"wb");
+    #else
+        FILE* pipe=popen(cmd,"w");
+    #endif
     if(!pipe){ std::cerr<<"Cannot start ffmpeg\n"; return 1; }
 
     do {
@@ -260,8 +286,12 @@ int main(int argc, char* argv[]){
 
         fwrite(current.pixels.data(),1,current.pixels.size(),pipe);
     } while(std::getline(*in,line));
+    #ifdef _WIN32
+        _pclose(pipe);
+    #else
+        pclose(pipe);
+    #endif
 
-    pclose(pipe);
     std::cerr<<"Done!\n";
     return 0;
 }
